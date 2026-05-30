@@ -72,8 +72,6 @@ This distinction is first-class in the schema. It's what separates a documentati
 | [Exquis](controllers/mpe-surface/exquis.yaml) | Intuitive Instruments | stub |
 | [Sensel Morph](controllers/mpe-surface/sensel-morph.yaml) | Sensel | stub |
 | [Lightpad](controllers/mpe-surface/lightpad.yaml) | ROLI | stub |
-| [Launchpad Pro](controllers/mpe-surface/launchpad-pro.yaml) | Novation | stub |
-| [Launchpad X](controllers/mpe-surface/launchpad-x.yaml) | Novation | stub |
 
 ### Expressive Instruments
 | Controller | Manufacturer | Status |
@@ -81,7 +79,6 @@ This distinction is first-class in the schema. It's what separates a documentati
 | [Eigenharp Pico](controllers/expressive/eigenharp-pico.yaml) | Eigenlabs | draft |
 | [Orba](controllers/expressive/orba.yaml) | Artiphon | stub |
 | [Orba 2](controllers/expressive/orba-2.yaml) | Artiphon | stub |
-| [Oddball](controllers/expressive/oddball.yaml) | Oddball | stub |
 | [GeoShred](controllers/expressive/geoshred.yaml) | MoForte | stub |
 
 ### Software / AUv3
@@ -97,12 +94,15 @@ This distinction is first-class in the schema. It's what separates a documentati
 | Controller | Manufacturer | Status |
 |---|---|---|
 | [Keystep](controllers/standard-midi/keystep.yaml) | Arturia | stub |
+| [Launchpad Pro](controllers/standard-midi/launchpad-pro.yaml) | Novation | stub |
+| [Launchpad X](controllers/standard-midi/launchpad-x.yaml) | Novation | stub |
 
 ### CC / Control Surface
 | Controller | Manufacturer | Status |
 |---|---|---|
 | [nanoKONTROL2](controllers/cc-only/nanokontrol.yaml) | Korg | draft |
 | [Control Block](controllers/cc-only/control-block.yaml) | ROLI | stub |
+| [Oddball](controllers/cc-only/oddball.yaml) | Oddball | stub |
 
 ---
 

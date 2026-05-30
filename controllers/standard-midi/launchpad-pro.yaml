@@ -6,15 +6,17 @@ meta:
   slug: launchpad-pro
   manufacturer: "Novation"
   version: null
-  category: mpe-surface
+  category: standard-midi
   schema_version: "0.2"
   status: stub
-  notes: "64-pad grid. Poly aftertouch. Can operate in MPE mode."
+  notes: >
+    64-pad grid with poly aftertouch and per-pad RGB lighting.
+    Sends standard MIDI with poly pressure — not MPE. Each pad sends on a
+    single channel; there is no per-note channel allocation or MPE zone model.
 
 connectivity:
   protocol:
     - standard-midi
-    - mpe
   connection:
     - usb
   middleware_required: false
@@ -34,31 +36,21 @@ sends:
   velocity_resolution: 7bit
   channel_pressure: false
   poly_pressure: true
-  pitch_bend: true
-  pitch_bend_range_semitones: 48
-  pitch_bend_range_configurable: true
+  pitch_bend: false
+  pitch_bend_range_semitones: null
+  pitch_bend_range_configurable: false
   program_change: false
   clock: false
   sysex: false
-  ccs:
-    - cc: 74
-      name: Slide / Timbre
-      description: MPE Y axis — vertical finger position
-      resolution: 7bit
-      configurable: false
+  ccs: []
 
 expression:
   breath: null
   pressure:
     source: poly-pressure
-    notes: Per-note finger pressure (MPE Z axis)
-  slide:
-    source: cc74
-    notes: Vertical finger position (MPE Y axis)
-  pitch:
-    source: pitch-bend
-    range_semitones: 48
-    notes: Per-note pitch deviation (MPE X axis)
+    notes: Per-pad pressure on a single MIDI channel — not per-note MPE pressure
+  slide: null
+  pitch: null
   strike:
     source: velocity
     notes: Initial contact velocity
@@ -67,12 +59,7 @@ expression:
   acceleration: null
   strips: []
 
-mpe:
-  zone: lower
-  member_channels: 15
-  manager_channel: 1
-  per_note_pitch_bend_range: 48
-  notes: null
+mpe: null
 
 mappings:
   vane:

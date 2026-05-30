@@ -1,22 +1,24 @@
-# Vane Controller Profile — Oddball
+# Vane Controller Profile — Launchpad X
 # Schema version: 0.1
 
 meta:
-  name: "Oddball"
-  slug: oddball
-  manufacturer: "Oddball"
+  name: "Launchpad X"
+  slug: launchpad-x
+  manufacturer: "Novation"
   version: null
-  category: expressive
+  category: standard-midi
   schema_version: "0.2"
   status: stub
-  notes: "Spherical percussion MIDI controller. Accelerometer-based."
+  notes: >
+    64-pad grid with poly aftertouch. Sends standard MIDI — not MPE.
+    Each pad sends on a single channel; no per-note channel allocation
+    or MPE zone model. Fewer features than the Launchpad Pro (no dedicated
+    fader/control rows, no standalone mode).
 
 connectivity:
   protocol:
     - standard-midi
-    - mpe
   connection:
-    - bluetooth-midi
     - usb
   middleware_required: false
   middleware: []
@@ -25,7 +27,7 @@ connectivity:
 
 implementation:
   type: configurable
-  config_method: companion-app
+  config_method: null
   notes: null
 
 sends:
@@ -35,9 +37,9 @@ sends:
   velocity_resolution: 7bit
   channel_pressure: false
   poly_pressure: true
-  pitch_bend: true
-  pitch_bend_range_semitones: 48
-  pitch_bend_range_configurable: true
+  pitch_bend: false
+  pitch_bend_range_semitones: null
+  pitch_bend_range_configurable: false
   program_change: false
   clock: false
   sysex: false
@@ -47,30 +49,18 @@ expression:
   breath: null
   pressure:
     source: poly-pressure
-    notes: null
-  slide:
-    source: cc74
-    notes: null
-  pitch:
-    source: pitch-bend
-    range_semitones: 48
-    notes: null
+    notes: Per-pad pressure on a single MIDI channel — not per-note MPE pressure
+  slide: null
+  pitch: null
   strike:
     source: velocity
-    notes: null
+    notes: Initial contact velocity
   lift: null
   roll: null
-  acceleration:
-    source: null
-    notes: TODO — confirm accelerometer CC assignments
+  acceleration: null
   strips: []
 
-mpe:
-  zone: lower
-  member_channels: null
-  manager_channel: 1
-  per_note_pitch_bend_range: 48
-  notes: null
+mpe: null
 
 mappings:
   vane:

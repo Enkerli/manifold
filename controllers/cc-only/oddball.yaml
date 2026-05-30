@@ -1,0 +1,81 @@
+# Vane Controller Profile — Oddball
+# Schema version: 0.1
+
+meta:
+  name: "Oddball"
+  slug: oddball
+  manufacturer: "Oddball"
+  version: null
+  category: cc-only
+  schema_version: "0.2"
+  status: stub
+  notes: >
+    Spherical percussion MIDI controller. Strike or shake the ball to send MIDI.
+    Accelerometer and impact sensor data is mapped to CCs and/or notes depending
+    on configuration. Functions as a gestural CC source, not a per-note expressive
+    instrument — analogous to NanoKontrol in role (sends control data), different
+    in physical interaction (motion/impact vs. faders/knobs).
+
+connectivity:
+  protocol:
+    - standard-midi
+  connection:
+    - bluetooth-midi
+    - usb
+  middleware_required: false
+  middleware: []
+  companion_app: null
+  companion_app_platforms: []
+
+implementation:
+  type: configurable
+  config_method: companion-app
+  notes: null
+
+sends:
+  notes: true
+  note_range: null
+  velocity: true
+  velocity_resolution: 7bit
+  channel_pressure: false
+  poly_pressure: false
+  pitch_bend: false
+  pitch_bend_range_semitones: null
+  pitch_bend_range_configurable: false
+  program_change: false
+  clock: false
+  sysex: false
+  ccs:
+    - cc: null
+      name: Accelerometer / Motion
+      description: >
+        Accelerometer axes mapped to CCs. CC assignments are configurable.
+        TODO — confirm default CC assignments from hardware documentation.
+      resolution: 7bit
+      configurable: true
+
+expression:
+  breath: null
+  pressure: null
+  slide: null
+  pitch: null
+  strike:
+    source: velocity
+    notes: Impact velocity on strike
+  lift: null
+  roll: null
+  acceleration:
+    source: cc
+    notes: >
+      Accelerometer data (shake/tilt) sent as CC. CC numbers configurable.
+      TODO — confirm default assignments.
+  strips: []
+
+mpe: null
+
+mappings:
+  vane:
+    patch_tab: []
+    modulation_sources: []
+    quirks: []
+    notes: null

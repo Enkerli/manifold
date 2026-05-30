@@ -15,6 +15,11 @@ meta:
   schema_version: "0.2"
   status: draft
   notes: >
+    The Eigenharp Pico goes substantially beyond MPE: breath pipe, per-key
+    roll (lateral tilt), and two ribbon strips give it dimensions of expression
+    unavailable on any standard MPE surface. MPE is one possible output mode,
+    not a complete description of the instrument.
+
     The Eigenharp Pico is a compact version of Eigenlabs' Eigenharp family.
     It is no longer commercially produced; Eigenlabs ceased operations and
     released EigenD as open source. The instrument remains in active use

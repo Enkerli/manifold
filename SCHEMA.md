@@ -56,7 +56,7 @@ meta:
 | `software` | AUv3, iOS app, or desktop software controller |
 | `vane-native` | Developed within the MTILT ecosystem; profile is partly prescriptive |
 | `standard-midi` | Note + velocity, no per-note expression |
-| `cc-only` | No note data; pure CC/control surface |
+| `cc-only` | Primary function is sending CCs / control data; notes may be incidental |
 
 ---
 
@@ -117,6 +117,32 @@ modes:
     default: false
     notes: null
 ```
+
+**One file, many host profiles.** A single Manifold file documents the full
+option space — all modes, all configurable parameters. A consuming host
+(synth, tool, rig manager) represents a *choice* over that space: one
+controller file × one mode × one frozen config-state. The same `sylphyo.yaml`
+backs "Sylphyo breath on CC2" and "Sylphyo breath on aftertouch" as two
+distinct host profiles.
+
+---
+
+## Named-Source Registry
+
+Conventional CC assignments for common continuous sources. Consumers can use
+these as seeds when a controller profile lists a source by name but the CC
+number is device-configurable.
+
+| Source name | Conventional CC | Notes |
+|---|---|---|
+| Mod wheel | CC1 | Present on nearly every keyboard-style controller |
+| Breath | CC2 | Standard for wind controllers; CC11 used as a mirror/alt |
+| Expression pedal | CC11 | Also CC4 on some pedalboards (e.g. FCB-01) |
+| Sustain | CC64 | Standard pedal input |
+| Slide / timbre | CC74 | MPE Y-axis convention (MIDI spec recommendation) |
+
+These are defaults and conventions, not requirements. Always prefer an
+explicit `cc:` value in the profile when the hardware has a fixed assignment.
 
 ---
 
@@ -235,6 +261,54 @@ mpe:
   per_note_pitch_bend_range: null
   notes: null
 ```
+
+---
+
+## `overlays` *(optional, surface controllers)*
+
+For controllers with swappable physical overlays that redefine the send map
+(e.g. Sensel Morph). Each overlay is effectively a sub-controller with its
+own `sends` and `expression`. Some overlays contain on-device layout switches,
+modelled as nested `layouts:`.
+
+```yaml
+overlays:
+  - id: piano
+    name: Piano Overlay
+    default: false
+    sends:
+      notes: true
+      velocity: true
+      poly_pressure: true
+      ccs: []
+    expression:
+      pressure:
+        source: poly-pressure
+        notes: null
+      # ... other dimensions as needed
+
+  - id: buchla-thunder
+    name: Buchla Thunder Overlay
+    default: false
+    notes: "On-overlay button switches between two sub-layouts."
+    layouts:
+      - id: layout-a
+        name: Layout A
+        default: true
+        sends:
+          notes: true
+          ccs: []
+        expression: {}
+      - id: layout-b
+        name: Layout B
+        default: false
+        sends:
+          notes: true
+          ccs: []
+        expression: {}
+```
+
+Each overlay (or layout within an overlay) maps to one host rig.
 
 ---
 

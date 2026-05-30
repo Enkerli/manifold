@@ -137,9 +137,20 @@ Structured profiles, consistent schema, community-verifiable data.
 
 **Next — Tooling**
 Schema validator, completeness report, JSON/plist export for consumption by synths and tools.
+Vane's MIDI-learn loop feeds measured CC numbers and `update_rate` values back
+into null-filled stubs — Zefiro Pro accelerometer axes and Exquis encoders are
+the first targets.
 
 **Later — Two-Way Communication**
 Config file format for controllers that support it. Exquis developer mode (dynamic note layout). Programmatic setup where hardware allows.
+
+**Later — Content Gaps**
+- Keyboard synths as controllers: MicroFreak (aftertouch + mod strip, `bidirectional: true`
+  candidate), Alesis V-mini, and the broader Keystep family.
+- Pedal controllers: FCB-1010 / FCB-01 (dual expression pedals, CC11/CC4 — natural
+  `cc-only` entries and proof-of-concept for the named-source registry).
+- Sensel Morph overlays: flesh out the `overlays:` schema with real Buchla Thunder
+  and Piano overlay data.
 
 **Horizon — MIDI 2.0 / MIDI-CI**
 Profile Configuration, Property Exchange, Protocol Negotiation. DrawnQurve as a reference implementation. Document early adopters (WIMSS, others) as case studies.

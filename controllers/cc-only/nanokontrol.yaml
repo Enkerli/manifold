@@ -1,0 +1,237 @@
+# Vane Controller Profile — Korg nanoKONTROL2
+# Schema version: 0.1
+
+meta:
+  name: Korg nanoKONTROL2
+  slug: nanokontrol
+  manufacturer: Korg
+  version: "2"              # nanoKONTROL vs nanoKONTROL2; profile covers v2
+  category: cc-only
+  schema_version: "0.2"
+  status: draft
+  notes: >
+    Slim USB control surface. 8 fader channels, each with fader, knob, and
+    3 buttons (S/M/R). Transport buttons. No note output in normal use.
+    Highly configurable via Korg Kontrol Editor software.
+    The nanoKONTROL (v1) has a different default CC map; this profile
+    covers v2.
+
+connectivity:
+  protocol:
+    - standard-midi
+  connection:
+    - usb
+  middleware_required: false
+  middleware: []
+  companion_app: Korg Kontrol Editor
+  companion_app_platforms:
+    - macos
+    - windows
+
+implementation:
+  type: configurable
+  config_method: companion-app
+  notes: >
+    All CC numbers, MIDI channel, and button behavior (toggle/momentary)
+    configurable via Korg Kontrol Editor. Scenes can be stored on device.
+    Factory default CC map documented below.
+
+sends:
+  notes: false              # Buttons can be configured to send notes, but not default
+  note_range: null
+  velocity: false
+  velocity_resolution: null
+  channel_pressure: false
+  poly_pressure: false
+  pitch_bend: false
+  pitch_bend_range_semitones: null
+  pitch_bend_range_configurable: false
+  program_change: false
+  clock: false
+  sysex: false
+
+  ccs:
+    # Default factory map — all values configurable
+    - cc: 0
+      name: Fader 1
+      description: Channel 1 fader
+      resolution: 7bit
+      configurable: true
+    - cc: 1
+      name: Fader 2
+      description: Channel 2 fader
+      resolution: 7bit
+      configurable: true
+    - cc: 2
+      name: Fader 3
+      description: Channel 3 fader
+      resolution: 7bit
+      configurable: true
+    - cc: 3
+      name: Fader 4
+      description: Channel 4 fader
+      resolution: 7bit
+      configurable: true
+    - cc: 4
+      name: Fader 5
+      description: Channel 5 fader
+      resolution: 7bit
+      configurable: true
+    - cc: 5
+      name: Fader 6
+      description: Channel 6 fader
+      resolution: 7bit
+      configurable: true
+    - cc: 6
+      name: Fader 7
+      description: Channel 7 fader
+      resolution: 7bit
+      configurable: true
+    - cc: 7
+      name: Fader 8
+      description: Channel 8 fader
+      resolution: 7bit
+      configurable: true
+    - cc: 16
+      name: Knob 1
+      description: Channel 1 rotary knob
+      resolution: 7bit
+      configurable: true
+    - cc: 17
+      name: Knob 2
+      description: Channel 2 rotary knob
+      resolution: 7bit
+      configurable: true
+    - cc: 18
+      name: Knob 3
+      description: Channel 3 rotary knob
+      resolution: 7bit
+      configurable: true
+    - cc: 19
+      name: Knob 4
+      description: Channel 4 rotary knob
+      resolution: 7bit
+      configurable: true
+    - cc: 20
+      name: Knob 5
+      description: Channel 5 rotary knob
+      resolution: 7bit
+      configurable: true
+    - cc: 21
+      name: Knob 6
+      description: Channel 6 rotary knob
+      resolution: 7bit
+      configurable: true
+    - cc: 22
+      name: Knob 7
+      description: Channel 7 rotary knob
+      resolution: 7bit
+      configurable: true
+    - cc: 23
+      name: Knob 8
+      description: Channel 8 rotary knob
+      resolution: 7bit
+      configurable: true
+    # S/M/R buttons — default CC values, toggle mode
+    - cc: 32
+      name: Solo 1
+      description: "S button, channel 1. Toggle: 0/127"
+      resolution: 7bit
+      configurable: true
+    - cc: 48
+      name: Mute 1
+      description: "M button, channel 1. Toggle: 0/127"
+      resolution: 7bit
+      configurable: true
+    - cc: 64
+      name: Record 1
+      description: "R button, channel 1. Toggle: 0/127"
+      resolution: 7bit
+      configurable: true
+    # Transport (CCs, not MIDI transport messages by default)
+    - cc: 41
+      name: Play
+      description: Transport Play button
+      resolution: 7bit
+      configurable: true
+    - cc: 42
+      name: Stop
+      description: Transport Stop button
+      resolution: 7bit
+      configurable: true
+    - cc: 43
+      name: Back (Rewind)
+      description: Transport Back button
+      resolution: 7bit
+      configurable: true
+    - cc: 44
+      name: Forward
+      description: Transport Forward button
+      resolution: 7bit
+      configurable: true
+    - cc: 45
+      name: Record
+      description: Transport Record button
+      resolution: 7bit
+      configurable: true
+
+expression:
+  breath:
+    source: null
+    notes: null
+  pressure:
+    source: null
+    notes: null
+  slide:
+    source: null
+    notes: null
+  pitch:
+    source: null
+    range_semitones: null
+    notes: null
+  strike:
+    source: null
+    notes: null
+  lift:
+    source: null
+    notes: null
+  roll:
+    source: null
+    notes: null
+  acceleration:
+    source: null
+    notes: null
+  strips: []
+
+vane:
+  profile_status: draft
+  recommended_mappings:
+    # Suggested Vane parameter layout — adapt as needed
+    fader_1: dynamics        # Overall volume / breath equivalent
+    fader_2: filter_cutoff
+    fader_3: filter_resonance
+    fader_4: reverb_mix
+    fader_5: delay_mix
+    fader_6: lfo_rate
+    fader_7: lfo_depth
+    fader_8: master_tune
+    knob_1: oscillator_shape
+    knob_2: oscillator_pitch
+    knob_3: envelope_attack
+    knob_4: envelope_decay
+    knob_5: envelope_sustain
+    knob_6: envelope_release
+    knob_7: mod_depth
+    knob_8: effects_param
+  quirks:
+    - >
+        Faders are not motorized — position mismatch on preset load
+        will cause jumps. Consider implementing a pickup/catch mode
+        in Vane for CC parameters.
+    - >
+        Default CC map (0–7 for faders) overlaps with GM standard
+        controller assignments. Remap in Kontrol Editor if conflicts arise.
+  notes: >
+    Straightforward CC controller. Primarily useful for parameter editing
+    and live tweaking rather than expressive performance. Pairs well with
+    a note-generating controller (e.g. Sylphyo or Exquis) in a split setup.

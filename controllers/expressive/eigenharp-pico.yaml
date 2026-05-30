@@ -1,0 +1,270 @@
+# Vane Controller Profile — Eigenharp Pico
+# Schema version: 0.1
+#
+# NOTE: The Eigenharp Pico is the most complex profile in this collection.
+# It uses a proprietary USB HID protocol and requires middleware to produce
+# any MIDI output. All MIDI behavior described here is therefore
+# middleware-dependent, not fixed hardware behavior.
+
+meta:
+  name: Eigenharp Pico
+  slug: eigenharp-pico
+  manufacturer: Eigenlabs
+  version: null
+  category: expressive
+  schema_version: "0.2"
+  status: draft
+  notes: >
+    The Eigenharp Pico is a compact version of Eigenlabs' Eigenharp family.
+    It is no longer commercially produced; Eigenlabs ceased operations and
+    released EigenD as open source. The instrument remains in active use
+    in the experimental music community.
+
+    Physical interface:
+      - 18 keys arranged in two columns, pressure and roll sensitive
+      - 1 breath pipe
+      - 2 strip controllers (touch-sensitive ribbons, left and right)
+
+    CRITICAL: The Pico does not speak MIDI natively. Its USB connection uses
+    a proprietary HID protocol. All MIDI output is produced by middleware
+    software, making this profile inherently software-defined.
+
+    Eigenharp keys have no traditional velocity. Attack is determined by
+    how quickly pressure is applied, or by breath, depending on EigenD setup.
+
+connectivity:
+  protocol:
+    - proprietary           # Native USB HID protocol
+    - standard-midi         # Via middleware output
+    - mpe                   # Achievable via middleware (per-channel per-key)
+    - osc                   # EigenD can output OSC natively
+  connection:
+    - proprietary-usb       # NOT USB class-compliant MIDI
+  middleware_required: true
+  middleware:
+    - name: EigenD
+      description: >
+        Original Eigenlabs software. Open source since Eigenlabs closure.
+        Full-featured but complex; uses the Belcanto scripting language
+        for configuration. Can output MIDI, OSC, or both simultaneously.
+      url: https://github.com/Eigenlabs/EigenD
+      platforms: [macos, windows, linux]
+      status: community-maintained
+    - name: eigenharp-midi
+      description: >
+        Lightweight community-developed alternative to EigenD.
+        Simpler configuration, lower overhead. Outputs MIDI only.
+        Less feature-complete than EigenD but more accessible for
+        straightforward MIDI use cases.
+      url: https://github.com/﹖             # TODO: confirm URL
+      platforms: [macos, linux]
+      status: community-maintained
+  companion_app: EigenD
+  companion_app_platforms:
+    - macos
+    - windows
+    - linux
+
+implementation:
+  type: software-defined
+  config_method: software
+  bidirectional: false
+  bidirectional_notes: null
+  notes: >
+    All MIDI behavior is configured within EigenD (or alternative middleware).
+    This includes: which key maps to which MIDI pitch, what CC carries breath
+    data, whether keys send on separate channels (MPE-like), CC assignments
+    for strips, pitch bend range, etc. There is no fixed MIDI implementation.
+    EigenD ships with default "rigs" (configurations) that provide reasonable
+    starting points; these defaults are described below as reference.
+
+modes:
+  - id: single-channel
+    name: Single Channel MIDI
+    default: false
+    notes: >
+      All keys send on one MIDI channel. Breath on CC2.
+      Chord-capable but no per-note expression in MIDI.
+  - id: per-key-channel
+    name: Per-Key Channel (MPE-like)
+    default: true
+    notes: >
+      EigenD default behavior: each key sends on a separate MIDI channel,
+      enabling per-note pressure and roll data. Functionally equivalent to
+      MPE but not conforming to the MPE spec's zone model without additional
+      EigenD configuration.
+  - id: mpe-conformant
+    name: MPE (Lower Zone, EigenD-configured)
+    default: false
+    notes: >
+      With specific EigenD rig configuration, output can conform to MPE
+      lower zone spec. Requires setting manager/member channel structure
+      explicitly in Belcanto.
+
+sends:
+  notes: true
+  note_range:
+    low: 36      # Configurable in EigenD; default depends on rig
+    high: 84     # 18 keys, depends on tuning/transposition setup
+  velocity: false
+  velocity_resolution: null
+  channel_pressure: false   # Per-key pressure sent as poly pressure or CC per channel
+  poly_pressure: true       # Per-key pressure in per-key-channel mode
+  pitch_bend: true          # Per-channel in per-key-channel mode
+  pitch_bend_range_semitones: 2    # EigenD default; configurable
+  pitch_bend_range_configurable: true
+  program_change: false
+  clock: false
+  sysex: false
+
+  ccs:
+    - cc: 2
+      name: Breath
+      description: Main breath pipe pressure
+      resolution: 7bit
+      mode: null           # All modes
+      configurable: true
+    - cc: null             # Strip CCs are user-configured
+      name: Left Strip
+      description: Left ribbon strip controller. Typically mapped to a CC.
+      resolution: 7bit
+      mode: null
+      configurable: true
+    - cc: null
+      name: Right Strip
+      description: Right ribbon strip controller. Typically mapped to a CC.
+      resolution: 7bit
+      mode: null
+      configurable: true
+    - cc: null
+      name: Key Roll
+      description: >
+        Per-key roll (lateral tilt) sent as CC on each key's MIDI channel.
+        CC number is EigenD-configured. Not available in single-channel mode.
+      resolution: 7bit
+      mode: per-key-channel
+      configurable: true
+
+expression:
+  breath:
+    source: cc2
+    notes: >
+      The breath pipe is a primary expression vector, comparable to
+      other wind controllers. High-resolution continuous data.
+      In EigenD's default rigs, this is CC2.
+  pressure:
+    source: poly-pressure
+    notes: >
+      Per-key finger pressure. In per-key-channel mode, sent as channel
+      pressure on each key's dedicated MIDI channel (functionally poly
+      pressure from Vane's perspective). In single-channel mode, sent
+      as poly pressure (key number + pressure value). No traditional
+      velocity — initial pressure ramp can substitute.
+  slide:
+    source: null
+    notes: >
+      No lateral slide detection on keys (unlike MPE surface controllers).
+      Strips provide a separate slide-like dimension — see strips below.
+  pitch:
+    source: pitch-bend
+    range_semitones: 2
+    notes: >
+      Per-channel pitch bend in per-key-channel mode, enabling true
+      per-note pitch deviation. Roll can also be configured to contribute
+      to pitch (vibrato via tilt).
+  strike:
+    source: null
+    notes: >
+      No traditional velocity. Attack character is shaped by: (1) rate of
+      pressure increase on key, (2) breath at moment of key press, or
+      (3) a combination configured in EigenD. This is a fundamental
+      paradigm difference from velocity-based instruments.
+  lift:
+    source: null
+    notes: No note-off velocity.
+  roll:
+    source: cc
+    notes: >
+      Each key detects lateral roll (tilt side to side). In per-key-channel
+      mode, sent as a CC on the key's MIDI channel. CC number is
+      EigenD-configured. Typical use: vibrato (routed to pitch bend),
+      timbre modulation, or tremolo. This is the Eigenharp's most distinctive
+      expressive dimension — a physical gesture with no direct analogue
+      in standard MIDI controllers.
+  acceleration:
+    source: null
+    notes: No accelerometer.
+  strips:
+    - id: strip-left
+      name: Left Strip
+      source: cc
+      notes: >
+        Touch-sensitive ribbon, approximately 40mm. Bidirectional continuous
+        data. Typical uses: pitch bend (global), expression, modulation,
+        or parameter sweep. CC-assigned in EigenD.
+    - id: strip-right
+      name: Right Strip
+      source: cc
+      notes: >
+        Same physical form as left strip. Typically assigned a different
+        function. Common pairing: left for pitch/modulation, right for
+        volume/breath supplement or effects parameter.
+
+mpe:
+  zone: lower
+  member_channels: 15       # Up to 15 keys simultaneously, though Pico has 18 physical keys
+  manager_channel: 1
+  per_note_pitch_bend_range: 2    # EigenD default; configure to match Vane
+  notes: >
+    Full MPE conformance requires explicit rig configuration in EigenD.
+    The default per-key-channel behavior is functionally MPE-compatible
+    but may not send the MPE zone setup messages (RPN 6) that strict
+    implementations require. Test against Vane's MPE parser and configure
+    accordingly. eigenharp-midi may handle this differently.
+
+vane:
+  profile_status: stub
+  recommended_mappings:
+    pitch: pitch-bend           # Per-note in per-key-channel/MPE mode
+    dynamics: cc2               # Breath as primary
+    pressure_mod: poly-pressure # Per-key pressure as secondary modulator
+    timbre: cc_roll             # Key roll — assign specific CC in EigenD
+    sweep: cc_strip_left        # Left strip — parameter sweep or pitch
+    mod: cc_strip_right         # Right strip — secondary modulation
+  quirks:
+    - >
+        No velocity. Any Vane preset designed for Eigenharp must not depend
+        on velocity for dynamics. Use breath (CC2) and/or key pressure instead.
+        Consider disabling velocity sensitivity entirely for this profile.
+    - >
+        Key roll CC is per-channel in MPE mode. Vane must capture CC data
+        on member channels, not just the manager channel, to receive roll
+        data correctly.
+    - >
+        Middleware latency varies. EigenD introduces more latency than
+        eigenharp-midi but provides richer configuration. Profile should
+        note which middleware was used during verification.
+    - >
+        The 18-key layout means polyphony is physically limited to 18
+        simultaneous notes. In MPE mode, channel count should reflect this.
+        Mapping to unusual scales or tunings in EigenD before Vane is
+        preferable to relying on Vane's pitch remapping alone.
+    - >
+        Community support only — EigenD may have macOS compatibility issues
+        on recent Apple Silicon Macs. Confirm middleware chain works
+        before designing around this controller.
+    - >
+        Key roll physical range is small; MIDI output may need scaling
+        in EigenD to be musically useful. Document EigenD scaling settings
+        in verified profile.
+  notes: >
+    The Eigenharp Pico occupies its own expressive category: part wind controller
+    (breath), part per-key MPE surface (pressure + roll), part ribbon controller
+    (strips), with no velocity at all. A well-designed Vane profile for this
+    instrument will likely be the most involved of all profiles in this collection,
+    and will require access to physical hardware and EigenD for verification.
+
+    The roll dimension — key tilt — is particularly worth designing for.
+    It is physically intuitive (natural vibrato gesture), musically meaningful,
+    and absent from virtually all other controllers. A Vane macro or LFO
+    that responds to roll specifically could be a compelling design target.

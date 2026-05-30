@@ -1,0 +1,84 @@
+# Vane Controller Profile — Yamaha WX11
+# Schema version: 0.1
+
+meta:
+  name: WX11
+  slug: wx11
+  manufacturer: Yamaha
+  version: null
+  category: wind
+  schema_version: "0.2"
+  status: stub
+  notes: >
+    Classic Yamaha MIDI wind controller from the late 1980s/early 1990s.
+    Fixed MIDI implementation. Outputs breath via CC2 and channel pressure.
+    No MPE. Requires MIDI DIN connection.
+
+connectivity:
+  protocol:
+    - standard-midi
+  connection:
+    - midi-din
+  middleware_required: false
+  middleware: []
+  companion_app: null
+  companion_app_platforms: []
+
+implementation:
+  type: fixed
+  config_method: n/a
+  notes: Fixed MIDI implementation — no configuration.
+
+sends:
+  notes: true
+  note_range:
+    low: 36
+    high: 84
+  velocity: false           # No velocity — note-on always at fixed value
+  velocity_resolution: null
+  channel_pressure: true
+  poly_pressure: false
+  pitch_bend: true
+  pitch_bend_range_semitones: 2
+  pitch_bend_range_configurable: false
+  program_change: false
+  clock: false
+  sysex: false
+
+  ccs:
+    - cc: 2
+      name: Breath
+      description: Main breath pressure
+      resolution: 7bit
+      configurable: false
+    - cc: 11
+      name: Expression
+      description: TODO — confirm whether WX11 also sends CC11
+      resolution: 7bit
+      configurable: false
+
+expression:
+  breath:
+    source: cc2
+    notes: Primary expression. Also reflected in channel pressure.
+  pressure:
+    source: channel-pressure
+    notes: Mirrors breath data
+  slide: null
+  pitch:
+    source: pitch-bend
+    range_semitones: 2
+    notes: Fixed 2-semitone range. Pitch bend from lip/bite pressure on mouthpiece.
+  strike: null
+  lift: null
+  roll: null
+  acceleration: null
+  strips: []
+
+vane:
+  profile_status: stub
+  recommended_mappings: {}
+  quirks:
+    - No velocity — Vane presets should ignore velocity for this profile
+    - Fixed DIN connection — requires MIDI interface
+  notes: null

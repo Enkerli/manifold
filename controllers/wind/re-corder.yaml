@@ -1,0 +1,74 @@
+# Vane Controller Profile — Artinoise re.corder
+# Schema version: 0.1
+
+meta:
+  name: re.corder
+  slug: re-corder
+  manufacturer: Artinoise
+  version: null
+  category: wind
+  schema_version: "0.2"
+  status: stub
+  notes: >
+    Smart recorder (soprano recorder form factor) with MIDI output.
+    Same manufacturer as Zefiro — may share MIDI conventions.
+    Bluetooth MIDI and USB. Companion app for configuration.
+
+connectivity:
+  protocol:
+    - standard-midi
+  connection:
+    - bluetooth-midi
+    - usb
+  middleware_required: false
+  middleware: []
+  companion_app: re.corder app    # TODO: confirm app name
+  companion_app_platforms:
+    - ios
+    - android            # TODO: confirm platforms
+
+implementation:
+  type: configurable
+  config_method: companion-app
+  notes: TODO — research configurable parameters
+
+sends:
+  notes: true
+  note_range: null          # TODO: research — likely recorder range, ~C4-D6
+  velocity: false
+  velocity_resolution: null
+  channel_pressure: true    # TODO: confirm
+  poly_pressure: false
+  pitch_bend: false         # TODO: confirm
+  pitch_bend_range_semitones: null
+  pitch_bend_range_configurable: false
+  program_change: false
+  clock: false
+  sysex: false
+
+  ccs:
+    - cc: 2
+      name: Breath
+      description: TODO — confirm CC assignment
+      resolution: 7bit
+      configurable: null
+
+expression:
+  breath:
+    source: cc2           # TODO: verify
+    notes: null
+  pressure: null
+  slide: null
+  pitch: null
+  strike: null
+  lift: null
+  roll: null
+  acceleration: null
+  strips: []
+
+vane:
+  profile_status: stub
+  recommended_mappings: {}
+  quirks:
+    - Same manufacturer as Zefiro — cross-reference for shared conventions
+  notes: null

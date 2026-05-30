@@ -1,0 +1,96 @@
+# Vane Controller Profile — Akai EWI USB
+# Schema version: 0.1
+
+meta:
+  name: EWI USB
+  slug: ewi-usb
+  manufacturer: Akai Professional
+  version: null
+  category: wind
+  schema_version: "0.2"
+  status: stub
+  notes: >
+    USB wind controller. Plays like an EWI (Electronic Wind Instrument)
+    with saxophone-style fingering by default. Sends breath via multiple
+    CCs simultaneously. Some parameters configurable via panel controls.
+
+connectivity:
+  protocol:
+    - standard-midi
+  connection:
+    - usb
+  middleware_required: false
+  middleware: []
+  companion_app: null       # TODO: confirm if EWI editor software exists for USB model
+  companion_app_platforms: []
+
+implementation:
+  type: configurable
+  config_method: device-menu
+  notes: >
+    Octave range, MIDI channel, and some behavior configurable via
+    rollers on the device body. TODO: research full configuration options.
+
+sends:
+  notes: true
+  note_range:
+    low: 28       # TODO: verify range
+    high: 100
+  velocity: false
+  velocity_resolution: null
+  channel_pressure: true
+  poly_pressure: false
+  pitch_bend: true
+  pitch_bend_range_semitones: 2
+  pitch_bend_range_configurable: false
+  program_change: false
+  clock: false
+  sysex: false
+
+  ccs:
+    - cc: 2
+      name: Breath
+      description: Breath pressure — primary
+      resolution: 7bit
+      configurable: false
+    - cc: 11
+      name: Expression
+      description: Also carries breath data simultaneously with CC2
+      resolution: 7bit
+      configurable: false
+    - cc: 74
+      name: Bite / Brightness
+      description: Bite pressure from mouthpiece
+      resolution: 7bit
+      configurable: false
+
+expression:
+  breath:
+    source: cc2
+    notes: >
+      Simultaneously sent on CC2, CC11, and channel pressure.
+      This triple-send is a known EWI behavior — Vane should use CC2
+      as primary and ignore the duplicates, or route them to different params.
+  pressure:
+    source: channel-pressure
+    notes: Mirrors breath data (see note on triple-send above)
+  slide: null
+  pitch:
+    source: pitch-bend
+    range_semitones: 2
+    notes: Bite pressure also contributes pitch bend (glide effect)
+  strike: null
+  lift: null
+  roll: null
+  acceleration: null
+  strips: []
+
+vane:
+  profile_status: stub
+  recommended_mappings: {}
+  quirks:
+    - >
+        Triple-send of breath (CC2 + CC11 + channel pressure) can
+        cause unexpected modulation if Vane routes all three independently.
+        Profile should explicitly disable CC11 and CP routing.
+  notes: null

@@ -1,0 +1,239 @@
+# Vane Controller Profile — Sylphyo
+# Schema version: 0.2
+
+meta:
+  name: Sylphyo
+  slug: sylphyo
+  manufacturer: Aodyo
+  version: null
+  category: wind
+  schema_version: "0.2"
+  status: draft
+  notes: >
+    Saxophone-fingered wind controller. The most capable MPE wind controller
+    currently available. Can behave as a standard MIDI wind controller or
+    as a full MPE instrument. The Sylphyo Link receiver enables wireless
+    connection to devices without BLE MIDI support.
+
+connectivity:
+  protocol:
+    - standard-midi
+    - mpe
+  connection:
+    - bluetooth-midi
+    - usb
+  middleware_required: false
+  middleware: []
+  companion_app: Sylphyo
+  companion_app_platforms:
+    - ios
+    - macos
+    - windows
+
+implementation:
+  type: configurable
+  config_method: companion-app
+  bidirectional: false
+  bidirectional_notes: null
+  notes: >
+    Configurable via companion app: MIDI channel, pitch bend range,
+    CC assignments for breath/pressure, MPE on/off, fingering system
+    (sax, recorder, EWI, flute, etc.), transposition. Some parameters
+    also accessible via the device's own touch-button interface.
+
+modes:
+  - id: standard
+    name: Standard MIDI
+    default: true
+    notes: Single channel. Breath on CC2. Pitch bend shared across notes.
+  - id: mpe
+    name: MPE
+    default: false
+    notes: >
+      Full MPE lower zone. Each note on a separate member channel.
+      Per-note pitch bend, pressure, and slide.
+
+sends:
+  notes: true
+  note_range:
+    low: 36
+    high: 96
+  velocity: true
+  velocity_resolution: 7bit
+  channel_pressure: true
+  poly_pressure: false
+  pitch_bend: true
+  pitch_bend_range_semitones: 2       # Standard mode default; 48 in MPE
+  pitch_bend_range_configurable: true
+  program_change: false
+  clock: false
+  sysex: false
+
+  ccs:
+    - cc: 2
+      name: Breath
+      description: Main breath pressure — primary dynamic control
+      param_type: continuous
+      resolution: 7bit
+      update_rate: null               # TODO: measure
+      mode: standard
+      configurable: true
+    - cc: 11
+      name: Expression
+      description: Can be configured to mirror breath
+      param_type: continuous
+      resolution: 7bit
+      update_rate: null
+      mode: standard
+      configurable: true
+    - cc: 74
+      name: Timbre / Slide
+      description: Lateral finger slide — MPE Y axis
+      param_type: continuous
+      resolution: 7bit
+      update_rate: null
+      mode: mpe
+      configurable: false
+
+expression:
+  breath:
+    source: cc2
+    param_type: continuous
+    resolution: 7bit
+    update_rate: null
+    notes: >
+      Primary expression vector. Also optionally mirrored on CC11.
+      In MPE mode, breath can map to channel pressure on each member channel.
+  pressure:
+    source: channel-pressure
+    param_type: continuous
+    resolution: 7bit
+    update_rate: null
+    notes: >
+      Bite / lip pressure on mouthpiece. Configurable — can supplement
+      breath for dynamics, or used as a separate modulation source.
+  slide:
+    source: cc74
+    param_type: continuous
+    resolution: 7bit
+    update_rate: null
+    notes: MPE mode only. Lateral finger movement along keys.
+  pitch:
+    source: pitch-bend
+    param_type: continuous
+    resolution: 14bit
+    range_semitones: 48
+    update_rate: null
+    notes: >
+      In MPE mode, per-note pitch bend with 48-semitone range (configurable).
+      In standard mode, 2-semitone default (configurable).
+      Enables microtonal playing via bent fingerings.
+  strike:
+    source: velocity
+    param_type: discrete
+    resolution: 7bit
+    notes: >
+      Tonguing attack velocity. Useful for articulation but wind controllers
+      typically use breath for primary dynamics.
+  lift:
+    source: null
+    param_type: discrete
+    resolution: null
+    notes: No note-off velocity.
+  roll:
+    source: null
+    param_type: null
+    resolution: null
+    update_rate: null
+    notes: No roll/tilt detection.
+  acceleration:
+    source: null
+    param_type: null
+    resolution: null
+    update_rate: null
+    notes: No accelerometer.
+  strips: []
+
+mpe:
+  zone: lower
+  member_channels: 15
+  manager_channel: 1
+  per_note_pitch_bend_range: 48
+  notes: >
+    Standard MPE lower zone. Member channels 2–16, manager on 1.
+    Pitch bend range should be set to 48 on both controller and Vane.
+    The Sylphyo app provides an MPE calibration tool.
+
+mappings:
+  vane:
+    patch_tab:
+      - param: mpe_mode
+        value: true
+        notes: Enable for expressive wind playing; disable for standard MIDI hosts
+      - param: pitchbend_range
+        value: 48
+        notes: Must match Sylphyo companion app MPE pitch bend range setting
+      - param: breath_cc
+        value: 2
+        notes: Primary breath source; disable CC11 routing to avoid doubling
+      - param: midi_channel
+        value: 1
+        notes: Manager channel in MPE mode; match companion app setting
+      - param: mpe_zone
+        value: lower
+        notes: null
+      - param: mpe_member_channels
+        value: 15
+        notes: null
+
+    modulation_sources:
+      - id: breath
+        source: cc2
+        param_type: continuous
+        resolution: 7bit
+        suggested_target: dynamics
+        notes: Primary expression — route to amplitude, filter, or both
+      - id: pitch
+        source: pitch-bend
+        param_type: continuous
+        resolution: 14bit
+        suggested_target: pitch
+        notes: Per-note in MPE. 14-bit resolution is the highest standard MIDI offers
+      - id: pressure
+        source: channel-pressure
+        param_type: continuous
+        resolution: 7bit
+        suggested_target: timbre
+        notes: Bite pressure — secondary modulator; good for vibrato depth or brightness
+      - id: slide
+        source: cc74
+        param_type: continuous
+        resolution: 7bit
+        suggested_target: timbre
+        notes: MPE mode only. Lateral finger slide — subtle but continuous
+      - id: strike
+        source: velocity
+        param_type: discrete
+        resolution: 7bit
+        suggested_target: envelope
+        notes: Tonguing attack. Less critical than breath for wind patches
+
+    quirks:
+      - >
+          In standard mode, breath (CC2) drops to zero immediately on note-off
+          even if the player is still blowing. Vane envelopes should be
+          breath-gated rather than ADSR when using this controller.
+      - >
+          CC11 mirrors CC2 in some configurations. Disable CC11 routing in
+          Vane's Patch tab to prevent unintended doubling.
+      - >
+          BLE MIDI latency varies by host and OS version. USB preferred
+          for latency-critical performance.
+      - >
+          Switching between standard and MPE modes requires manual profile
+          switch in Vane. No automatic detection.
+    profile_status: draft
+    notes: >
+      The Sylphyo is the reference wind controller for Vane's MPE wind profile.
+      Its implementation is well-documented and its companion app makes it
+      straightforward to configure for specific synthesis targets.

@@ -1,0 +1,80 @@
+# Vane Controller Profile — Orba
+# Schema version: 0.1
+
+meta:
+  name: "Orba"
+  slug: orba
+  manufacturer: "Artiphon"
+  version: null
+  category: expressive
+  schema_version: "0.2"
+  status: stub
+  notes: "Palm-sized looper/instrument. MPE output. Accelerometer."
+
+connectivity:
+  protocol:
+    - standard-midi
+    - mpe
+  connection:
+    - bluetooth-midi
+    - usb
+  middleware_required: false
+  middleware: []
+  companion_app: null
+  companion_app_platforms: []
+
+implementation:
+  type: configurable
+  config_method: companion-app
+  notes: null
+
+sends:
+  notes: true
+  note_range: null
+  velocity: true
+  velocity_resolution: 7bit
+  channel_pressure: false
+  poly_pressure: true
+  pitch_bend: true
+  pitch_bend_range_semitones: 48
+  pitch_bend_range_configurable: true
+  program_change: false
+  clock: false
+  sysex: false
+  ccs: []
+
+expression:
+  breath: null
+  pressure:
+    source: poly-pressure
+    notes: null
+  slide:
+    source: cc74
+    notes: null
+  pitch:
+    source: pitch-bend
+    range_semitones: 48
+    notes: null
+  strike:
+    source: velocity
+    notes: null
+  lift: null
+  roll: null
+  acceleration:
+    source: null
+    notes: TODO — confirm accelerometer CC assignments
+  strips: []
+
+mpe:
+  zone: lower
+  member_channels: null
+  manager_channel: 1
+  per_note_pitch_bend_range: 48
+  notes: null
+
+mappings:
+  vane:
+    patch_tab: []
+    modulation_sources: []
+    quirks: []
+    notes: null

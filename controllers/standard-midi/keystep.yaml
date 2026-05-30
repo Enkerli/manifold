@@ -1,0 +1,82 @@
+# Vane Controller Profile — Arturia Keystep
+# Schema version: 0.1
+
+meta:
+  name: Keystep
+  slug: keystep
+  manufacturer: Arturia
+  version: null
+  category: standard-midi
+  schema_version: "0.2"
+  status: stub
+  notes: >
+    32-key mini keyboard with step sequencer, arpeggiator, and CV/gate output.
+    No aftertouch. Standard MIDI velocity only. Useful for sequencing Vane
+    patterns or simple note input.
+
+connectivity:
+  protocol:
+    - standard-midi
+  connection:
+    - usb
+    - midi-din
+  middleware_required: false
+  middleware: []
+  companion_app: Arturia MIDI Control Center
+  companion_app_platforms:
+    - macos
+    - windows
+
+implementation:
+  type: configurable
+  config_method: companion-app
+  notes: MIDI channel, velocity curves, transposition configurable via MIDI Control Center.
+
+sends:
+  notes: true
+  note_range:
+    low: 36
+    high: 96
+  velocity: true
+  velocity_resolution: 7bit
+  channel_pressure: false
+  poly_pressure: false
+  pitch_bend: true
+  pitch_bend_range_semitones: 2
+  pitch_bend_range_configurable: false
+  program_change: false
+  clock: true
+  sysex: false
+  ccs:
+    - cc: 64
+      name: Sustain
+      description: Sustain pedal input (if connected)
+      resolution: 7bit
+      configurable: false
+
+expression:
+  breath: null
+  pressure: null
+  slide: null
+  pitch:
+    source: pitch-bend
+    range_semitones: 2
+    notes: Pitch bend wheel. Fixed 2-semitone range.
+  strike:
+    source: velocity
+    notes: Key velocity. Curves configurable in MIDI Control Center.
+  lift: null
+  roll: null
+  acceleration: null
+  strips:
+    - id: mod-wheel
+      name: Modulation Strip
+      source: cc
+      notes: Touch strip sends CC1 (mod wheel). Not a ribbon — touch-sensitive pad.
+
+vane:
+  profile_status: stub
+  recommended_mappings: {}
+  quirks:
+    - No aftertouch — Vane presets should not depend on pressure for this profile
+  notes: null

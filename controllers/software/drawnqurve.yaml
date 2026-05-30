@@ -1,0 +1,64 @@
+# Vane Controller Profile — DrawnQurve
+# Schema version: 0.1
+
+meta:
+  name: "DrawnQurve"
+  slug: drawnqurve
+  manufacturer: "MTILT"
+  version: null
+  category: software
+  schema_version: "0.2"
+  status: stub
+  notes: "Our own software controller. User-defined MIDI output."
+
+connectivity:
+  protocol:
+    - standard-midi
+  connection:
+    - virtual-midi
+    - ios-au
+  middleware_required: false
+  middleware: []
+  companion_app: null
+  companion_app_platforms:
+    - ios
+
+implementation:
+  type: user-defined
+  config_method: software
+  notes: null
+
+sends:
+  notes: true
+  note_range: null
+  velocity: true
+  velocity_resolution: 7bit
+  channel_pressure: false
+  poly_pressure: false
+  pitch_bend: false
+  pitch_bend_range_semitones: null
+  pitch_bend_range_configurable: false
+  program_change: false
+  clock: false
+  sysex: false
+  ccs: []
+
+expression:
+  breath: null
+  pressure: null
+  slide: null
+  pitch: null
+  strike:
+    source: velocity
+    notes: null
+  lift: null
+  roll: null
+  acceleration: null
+  strips: []
+
+mappings:
+  vane:
+    patch_tab: []
+    modulation_sources: []
+    quirks: []
+    notes: null

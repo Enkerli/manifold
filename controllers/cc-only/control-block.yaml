@@ -1,0 +1,70 @@
+# Vane Controller Profile — ROLI Control Block
+# Schema version: 0.1
+
+meta:
+  name: Control Block
+  slug: control-block
+  manufacturer: ROLI
+  version: null
+  category: cc-only
+  schema_version: "0.2"
+  status: stub
+  notes: >
+    Hardware accessory that physically attaches to ROLI Lightpad via magnetic
+    connector. Provides faders and buttons. Communicates through the Lightpad's
+    MIDI connection — does not connect independently. Profile should be
+    used alongside the Lightpad profile.
+
+connectivity:
+  protocol:
+    - standard-midi
+  connection:
+    - usb             # Via Lightpad host connection
+    - bluetooth-midi  # Via Lightpad host connection
+  middleware_required: false
+  middleware: []
+  companion_app: ROLI Dashboard
+  companion_app_platforms:
+    - macos
+    - windows
+
+implementation:
+  type: configurable
+  config_method: companion-app
+  notes: >
+    Configured via ROLI Dashboard alongside Lightpad. CC assignments
+    and fader behavior configurable.
+
+sends:
+  notes: false
+  note_range: null
+  velocity: false
+  velocity_resolution: null
+  channel_pressure: false
+  poly_pressure: false
+  pitch_bend: false
+  pitch_bend_range_semitones: null
+  pitch_bend_range_configurable: false
+  program_change: false
+  clock: false
+  sysex: false
+  ccs: []   # TODO: research default CC assignments for faders/buttons
+
+expression:
+  breath: null
+  pressure: null
+  slide: null
+  pitch: null
+  strike: null
+  lift: null
+  roll: null
+  acceleration: null
+  strips: []
+
+vane:
+  profile_status: stub
+  recommended_mappings: {}
+  quirks:
+    - Not an independent device — requires physical Lightpad to connect
+    - Profile most useful when documented as part of a Lightpad + Control Block rig
+  notes: null

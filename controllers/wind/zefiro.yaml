@@ -1,0 +1,98 @@
+# Vane Controller Profile — Zefiro / Zefiro Pro
+# Schema version: 0.1
+
+meta:
+  name: Zefiro
+  slug: zefiro
+  manufacturer: Artinoise
+  version: null             # Standard and Pro variants; Pro adds accelerometer
+  category: wind
+  schema_version: "0.2"
+  status: stub
+  notes: >
+    Breath-only controller — does not generate notes from fingering.
+    Designed to be paired with a keyboard or other note source.
+    Same manufacturer as re.corder; likely shares some MIDI conventions.
+    The Zefiro Pro adds a 3-axis accelerometer for gestural expression.
+
+connectivity:
+  protocol:
+    - standard-midi
+  connection:
+    - bluetooth-midi
+    - usb               # TODO: confirm USB availability
+  middleware_required: false
+  middleware: []
+  companion_app: null   # TODO: confirm if companion app exists
+  companion_app_platforms: []
+
+implementation:
+  type: configurable    # TODO: confirm configurability
+  config_method: null   # TODO: research
+  notes: null
+
+sends:
+  notes: false
+  note_range: null
+  velocity: false
+  velocity_resolution: null
+  channel_pressure: true    # TODO: confirm — likely CP or CC2
+  poly_pressure: false
+  pitch_bend: false
+  pitch_bend_range_semitones: null
+  pitch_bend_range_configurable: false
+  program_change: false
+  clock: false
+  sysex: false
+
+  ccs:
+    - cc: 2
+      name: Breath
+      description: TODO — confirm CC2 vs CC11 vs channel pressure
+      resolution: 7bit
+      configurable: null    # TODO
+    # Zefiro Pro accelerometer CCs — TODO: research
+    - cc: null
+      name: Accelerometer X
+      description: Pro only — TODO confirm CC assignments
+      resolution: 7bit
+      configurable: null
+    - cc: null
+      name: Accelerometer Y
+      description: Pro only
+      resolution: 7bit
+      configurable: null
+    - cc: null
+      name: Accelerometer Z
+      description: Pro only
+      resolution: 7bit
+      configurable: null
+
+expression:
+  breath:
+    source: cc2           # TODO: verify
+    notes: Primary and only expression on standard model
+  pressure: null
+  slide: null
+  pitch: null
+  strike: null
+  lift: null
+  roll: null
+  acceleration:
+    source: cc            # Pro only
+    notes: >
+      3-axis accelerometer on Zefiro Pro. Gesture/tilt data.
+      CC assignments TBD — research required.
+  strips: []
+
+vane:
+  profile_status: stub
+  recommended_mappings: {}
+  quirks:
+    - Breath-only — must be paired with a separate note source in Vane
+    - Artinoise also makes re.corder; check for shared MIDI conventions
+  notes: >
+    The Zefiro Pro's accelerometer opens up gestural performance dimensions
+    beyond what most breath controllers offer. Worth investigating whether
+    the accelerometer data is usable for musically meaningful modulation
+    (tilt for vibrato depth, forward lean for filter sweep, etc.).

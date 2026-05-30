@@ -1,0 +1,154 @@
+# Vane Controller Profile Template
+# Schema version: 0.2
+
+meta:
+  name: ""
+  slug: ""
+  manufacturer: ""
+  version: null
+  category: ""              # wind | mpe-surface | expressive | software | vane-native | standard-midi | cc-only
+  schema_version: "0.2"
+  status: stub              # stub | draft | complete | verified
+  notes: null
+
+connectivity:
+  protocol: []              # standard-midi | mpe | midi-2 | osc | proprietary
+  connection: []            # usb | bluetooth-midi | midi-din | virtual-midi | network-osc | ios-au | proprietary-usb
+  middleware_required: false
+  middleware: []
+  companion_app: null
+  companion_app_platforms: []
+
+implementation:
+  type: fixed               # fixed | configurable | software-defined | user-defined | prescriptive
+  config_method: null       # device-menu | companion-app | sysex | software | n/a
+  notes: null
+
+# Remove if controller has only one mode
+modes:
+  - id: default
+    name: ""
+    default: true
+    notes: null
+
+sends:
+  notes: false
+  note_range:
+    low: 0
+    high: 127
+  velocity: false
+  velocity_resolution: 7bit
+  channel_pressure: false
+  poly_pressure: false
+  pitch_bend: false
+  pitch_bend_range_semitones: 2
+  pitch_bend_range_configurable: false
+  program_change: false
+  clock: false
+  sysex: false
+  ccs: []
+  # CC entry shape:
+  # - cc: 2
+  #   name: Breath
+  #   description: ""
+  #   param_type: continuous   # continuous | discrete | config
+  #   resolution: 7bit         # 7bit | 14bit | float
+  #   update_rate: null        # messages/sec if known
+  #   mode: null
+  #   configurable: false
+
+expression:
+  breath:
+    source: null
+    param_type: continuous
+    resolution: 7bit
+    update_rate: null
+    notes: null
+  pressure:
+    source: null
+    param_type: continuous
+    resolution: 7bit
+    update_rate: null
+    notes: null
+  slide:
+    source: null
+    param_type: continuous
+    resolution: 7bit
+    update_rate: null
+    notes: null
+  pitch:
+    source: null
+    param_type: continuous
+    resolution: 14bit
+    range_semitones: null
+    update_rate: null
+    notes: null
+  strike:
+    source: null
+    param_type: discrete
+    resolution: 7bit
+    notes: null
+  lift:
+    source: null
+    param_type: discrete
+    resolution: 7bit
+    notes: null
+  roll:
+    source: null
+    param_type: continuous
+    resolution: 7bit
+    update_rate: null
+    notes: null
+  acceleration:
+    source: null
+    param_type: continuous
+    resolution: 7bit
+    update_rate: null
+    notes: null
+  strips: []
+  # Strip entry shape:
+  # - id: strip-left
+  #   name: Left Strip
+  #   source: cc
+  #   cc: null
+  #   param_type: continuous
+  #   resolution: 7bit
+  #   update_rate: null
+  #   notes: null
+
+# Remove if MPE not supported
+mpe:
+  zone: null                # lower | upper | both | configurable
+  member_channels: null
+  manager_channel: null
+  per_note_pitch_bend_range: null
+  notes: null
+
+vane:
+  patch_tab:
+    # Config parameters — set once per session in Vane's Patch tab
+    # - param: midi_channel
+    #   value: 1
+    #   notes: null
+    []
+
+  modulation_sources:
+    # Continuous/discrete sources — real-time modulation in Vane
+    # - id: breath
+    #   source: cc2
+    #   param_type: continuous
+    #   resolution: 7bit
+    #   suggested_target: dynamics
+    #   notes: null
+    []
+
+  # Include only for vane-native category
+  # design_notes:
+  #   target_resolution: 14bit
+  #   target_update_rate: null
+  #   open_questions: []
+  #   development_priorities: []
+
+  quirks: []
+  profile_status: stub      # stub | draft | complete
+  notes: null
